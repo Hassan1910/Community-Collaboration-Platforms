@@ -5,10 +5,11 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { GithubIcon, ExternalLinkIcon, CalendarIcon } from "lucide-react"
+import { GithubIcon, ExternalLinkIcon, CalendarIcon, PencilIcon } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
 import { LikeButton } from "@/components/like-button"
 import { CommentSection } from "@/components/comment-section"
+import { DeleteProjectDialog } from "@/components/delete-project-dialog"
 
 export const dynamic = "force-dynamic"
 
@@ -56,6 +57,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         include: {
             user: {
                 select: {
+                    id: true,
+                    clerkId: true,
                     name: true,
                     username: true,
                     image: true,
@@ -72,6 +75,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
     let isLiked = false
     let currentUserImage = null
+    const isOwner = userId === project.user.clerkId
 
     if (userId) {
         const user = await prisma.user.findUnique({ where: { clerkId: userId } })
@@ -164,6 +168,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                                 </Button>
                             </a>
                         </div>
+                        {isOwner && (
+                            <div className="flex gap-2 mt-4 md:mt-0">
+                                <Link href={`/project/${project.slug}/edit`}>
+                                    <Button variant="outline" size="sm" className="gap-2">
+                                        <PencilIcon className="size-4" /> Edit
+                                    </Button>
+                                </Link>
+                                <DeleteProjectDialog projectId={project.id} projectTitle={project.title} />
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-4 mt-8 pt-6 border-t border-border/50">

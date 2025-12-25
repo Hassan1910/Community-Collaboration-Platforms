@@ -68,9 +68,11 @@ export default async function Home() {
 
         {projects.length > 0 && (
           <div className="mt-12 text-center">
-            <Button variant="ghost" size="lg" className="text-muted-foreground hover:text-foreground">
-              View all projects &rarr;
-            </Button>
+            <Link href="/highlights">
+              <Button variant="ghost" size="lg" className="text-muted-foreground hover:text-foreground">
+                View all projects &rarr;
+              </Button>
+            </Link>
           </div>
         )}
       </section>
